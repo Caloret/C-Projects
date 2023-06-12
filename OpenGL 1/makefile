@@ -13,6 +13,7 @@ $(BINARY): $(OBJECTS)
 		   $(CC) -o $@ $^ -lglfw3 -lgdi32 -lopengl32
 
 %.o:%.c
+	if not exist $(OUTPUTFOLDER) mkdir $(OUTPUTFOLDER)
 	$(CC) $(CFLAGS) -c -o $(OUTPUTFOLDER)\$@ $^
 
 clean:
