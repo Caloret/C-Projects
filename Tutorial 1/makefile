@@ -1,21 +1,20 @@
 CC=gcc
 CFLAGS=-Wall -Wextra -g -std=c11
-OUTPUTFOLDER = .\bin
-BINARY=$(OUTPUTFOLDER)\HelloWorld
+BINARY=Examples
 
-CFILES=HelloWorld.c 
-OBJECTS=$(OUTPUTFOLDER)\HelloWorld.o
-
-
-all: $(BINARY)
+OBJECTS=arcadia_string_lib.o Examples.o
 
 $(BINARY): $(OBJECTS)
-		   $(CC) -o $@ $^
+	$(CC) -o $@ $^
 
-%.o:%.c
-	if not exist $(OUTPUTFOLDER) mkdir $(OUTPUTFOLDER)
-	$(CC) $(CFLAGS) -c -o $(OUTPUTFOLDER)\$@ $^
+%.o: %.c
+	$(CC) $(CFLAGS) -c -o $@ $^ 
 
+.PHONY :  run
+run:
+	$(BINARY).exe
+
+.PHONY :  clean
 clean:
 	del $(BINARY).exe		   
-	del $(OUTPUTFOLDER)\*.o
+	del $(OBJECTS)
