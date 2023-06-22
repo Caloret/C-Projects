@@ -1,7 +1,7 @@
 #include "arcadia_string_lib.h"
+#include "arcadia_math_lib.h"
 
-
-int arcadia_string_len(char *input)
+static int arcadia_string_len_data(const char *input)
 {
     int size = 0;
 
@@ -16,7 +16,7 @@ int arcadia_string_len(char *input)
     return size;
 }
 
-int arcadia_string_comp(char *first, char *second, int len)
+static int arcadia_string_comp_data(const char *first, const char *second, int len)
 {
     if (first == NULL && second == NULL) return 0;
 
@@ -39,7 +39,7 @@ int arcadia_string_comp(char *first, char *second, int len)
     return result;
 }
 
-void arcadia_string_copy(char *source, char *target, int size)
+static void arcadia_string_copy_data(const char *source, char *target, int size)
 {
     if (source == NULL)
     {
@@ -55,10 +55,10 @@ void arcadia_string_copy(char *source, char *target, int size)
     }
 }
 
-int arcadia_string_count_words(char *phrase)
+static int arcadia_string_count_words_data(const char *phrase)
 {
-    char *start_word_pointer = phrase;
-    char *word_pointer = phrase;
+    const char *start_word_pointer = phrase;
+    const char *word_pointer = phrase;
     unsigned int words = 0;
 
     while (*word_pointer != '\0')
@@ -83,4 +83,61 @@ int arcadia_string_count_words(char *phrase)
     }
 
     return words;
+}
+
+arcadia_string *arcadia_string_create(const char *str)
+{
+    int size = arcadia_string_len_data(str);
+
+    arcadia_string *arc_str = malloc(sizeof(*arc_str) + size);
+
+    arc_str->len = size;
+    arc_str->data = malloc(size);
+    arcadia_string_copy_data(str, arc_str->data, size);
+
+    return arc_str; 
+}
+
+int arcadia_string_len(const arcadia_string *str)
+{
+    if (str == NULL) return 0;
+
+    return str->len;
+}
+
+int arcadia_string_comp(const arcadia_string *first, const arcadia_string *second, int len)
+{
+    return arcadia_string_comp_data(first->data, second->data, len);
+}
+
+int arcadia_string_count_words(const arcadia_string *phrase)
+{
+    if (phrase == NULL) return 0;
+
+    if (phrase->data == NULL) return 0;
+
+    return arcadia_string_count_words_data(phrase->data);
+}
+
+void arcadia_string_copy(const arcadia_string *source, arcadia_string *target, int size)
+{
+    int final_size = MIN(size, source->len);
+
+    arcadia_string_copy_data(source->data, target->data, final_size);
+    
+    target->len = final_size;
+}
+
+void arcadia_string_destroy(arcadia_string *str)
+{
+    if (str == NULL) return;
+
+    if (str->data != NULL)
+    {
+        free(str->data);
+    }
+
+    free(str);
+
+    str = NULL;
 }

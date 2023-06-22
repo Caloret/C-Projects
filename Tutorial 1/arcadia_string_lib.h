@@ -2,13 +2,23 @@
 #define ARCADIA_STRING_LIB_H
 
 #include "stdint.h"
+#include "stdlib.h"
 
-int arcadia_string_len(char *source);
+typedef struct arcadia_string {
+    int len;
+    char* data;
+} arcadia_string;
 
-int arcadia_string_comp(char *first, char *second, int len);
+arcadia_string *arcadia_string_create(const char *str);
 
-int arcadia_string_count_words(char *phrase);
+void arcadia_string_destroy(arcadia_string *str);
 
-void arcadia_string_copy(char *source, char *target, int size);
+int arcadia_string_len(const arcadia_string *str);
+
+int arcadia_string_comp(const arcadia_string *first, const arcadia_string *second, int len);
+
+int arcadia_string_count_words(const arcadia_string *phrase);
+
+void arcadia_string_copy(const arcadia_string *source, arcadia_string *target, int size);
 
 #endif

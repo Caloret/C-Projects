@@ -2,19 +2,20 @@
 #define ARCADIA_TEST_FRAMEWORK_H
 
 #include "assert.h"
+#include "stdio.h"
 
 #define ARCADIA_ASSERT(x, message) do {  \
     if ((x))                            \
     {                                           \
-        printf("\nTEST PASSED %s\n", (#message));       \
+        fprintf(stdout, "\nTEST PASSED %s\n", (#message));       \
     }                                           \
     else                                            \
     {                                           \
-        printf("\nTEST FAILED %s\n", (#message));       \
-        printf("\nFile: %s\t\tLine: %d\n", __FILE__, __LINE__);       \
+        fprintf(stderr, "\nTEST FAILED %s\n", (#message));       \
+        fprintf(stderr, "\nFile: %s\t\tLine: %d\n", __FILE__, __LINE__);       \
     }                                           \
-    printf("\n\t %s\n", (#x));                  \
-} while(0);                                     \
+    fprintf(stdout, "\n\t %s\n", (#x));                  \
+} while(0)                                     \
 
 #endif
 
