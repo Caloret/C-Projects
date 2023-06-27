@@ -80,7 +80,6 @@ void setup(void)
     ball.y = 0;
 
     int w, h;
-    float x_out = 0.f, y_out = 0.f;
     SDL_GetWindowSize(window, &w, &h);
 
     float plot_factor = w / NUMBER_OF_POINTS_PER_PLOT;
@@ -147,10 +146,6 @@ void update(void)
 
     double factor = 50;
 
-    background_colour_R = SQUARE(cos(2 * PI * frame_number / (FPS * factor))) * 256;
-    background_colour_G = SQUARE(cos(2 * PI * frame_number / (FPS * factor)) + 0.5) * 256;
-    background_colour_B = SQUARE(cos(2 * PI * frame_number / (FPS * factor)) + 0.5) * 256;
-
     // reset frame number
     frame_number = frame_number > (factor * FPS) ? 0 : frame_number;
     frame_number++;
@@ -160,25 +155,20 @@ void render(void)
 {
     SDL_SetRenderDrawColor(
         renderer, 
-        background_colour_R, 
-        background_colour_G, 
-        background_colour_B, 
-        background_colour_A);
-    SDL_SetRenderDrawColor(
-        renderer, 
-        255, 
-        255, 
-        255, 
+        0, 
+        0, 
+        0, 
         255);
     SDL_RenderClear(renderer);
     
-    SDL_SetRenderDrawColor(
-        renderer, 
-        255, 
-        255, 
-        255, 
-        255);
-    SDL_RenderFillRect(renderer, &ball);
+    // Ball rendering
+    // SDL_SetRenderDrawColor(
+    //     renderer, 
+    //     255, 
+    //     255, 
+    //     255, 
+    //     255);
+    // SDL_RenderFillRect(renderer, &ball);
 
     SDL_SetRenderDrawColor(
         renderer, 
@@ -194,6 +184,14 @@ void render(void)
         WIDTH/2.0f - 50.f, HEIGHT/2.0f + 100.0f - 50.f
     );
 
+    SDL_SetRenderDrawColor(
+        renderer, 
+        255, 
+        255, 
+        255, 
+        255);
+
+    // Render axis and plot
     arcadia_sdl_render_axis(renderer, 2);
 
     SDL_SetRenderDrawColor(
@@ -209,6 +207,5 @@ void render(void)
         sizeof(points) / sizeof(SDL_FPoint)
     );
 
-    //SDL_UpdateWindowSurface(window);
     SDL_RenderPresent(renderer);
 }
