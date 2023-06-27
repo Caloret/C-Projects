@@ -4,16 +4,16 @@
 #include "stdbool.h"
 #include "constants.h"
 #include "math.h"
+#include "arcadia_sdl.h"
 
 #define WINDOW_TITLE "Hello Window!"
 #define POSITION_X SDL_WINDOWPOS_CENTERED
 #define POSITION_Y SDL_WINDOWPOS_CENTERED
 #define WIDTH 600
 #define HEIGHT 500
-
-#define LOG_SDL_ERR(x) fprintf(stderr, "[SDL] " #x " Error: %s \n", SDL_GetError());
-#define LOG_SDL_DEBUG(x) fprintf(stdout, "[SDL] " #x "\n");  
-#define LOG_SDL_REVISION_DEBUG() fprintf(stdout, "[SDL] SDL Revision: %s\n", SDL_GetRevision());  
+#define MAX_NUMBER_OF_POINTS (WIDTH * HEIGHT)
+#define NUMBER_OF_POINTS_PER_PLOT (WIDTH * 10)
+#define PIXELS_PER_UNIT (WIDTH / 5)
 
 int app_is_running = false;
 SDL_Window *window;
@@ -30,12 +30,9 @@ double background_colour_A = 0.0;
 SDL_Rect ball;
 float ball_speed_x_axis = 200.0f;
 float ball_speed_y_axis = 200.0f;
-
-int initialize_window(void);
+SDL_FPoint points[NUMBER_OF_POINTS_PER_PLOT];
 
 void setup(void);
-
-void destroy_window(void);
 
 void process_input(void);
 
@@ -49,7 +46,15 @@ int main(int argc, char *argv[])
     argc = argc;
     argv = argv;
 
-    app_is_running = initialize_window();
+    app_is_running = arcadia_sdl_initialize_window(
+        &window, 
+        &renderer, 
+        POSITION_X,
+        POSITION_Y,
+        WIDTH,
+        HEIGHT,
+        WINDOW_TITLE,
+        SDL_WINDOW_RESIZABLE);
     
     setup();
 
@@ -60,50 +65,11 @@ int main(int argc, char *argv[])
         render();
     }
 
-    destroy_window();
+    arcadia_sdl_destroy_window(&window, &renderer);
     
     return EXIT_SUCCESS;
 }
 
-int initialize_window(void)
-{
-    LOG_SDL_REVISION_DEBUG();
-    LOG_SDL_DEBUG("Initializing subsystems...");
-    
-    if (SDL_Init(SDL_INIT_EVERYTHING) != EXIT_SUCCESS)
-    {
-        LOG_SDL_ERR("There was an error initializing the SDL library.");
-        return false;
-    }   
-    
-    LOG_SDL_DEBUG("Initializing window.");
-    
-    window = SDL_CreateWindow(
-        WINDOW_TITLE,
-        POSITION_X,
-        POSITION_Y,
-        WIDTH,
-        HEIGHT,
-        SDL_WINDOW_ALWAYS_ON_TOP | SDL_WINDOW_RESIZABLE);
-
-    if (window == NULL)
-    {
-        LOG_SDL_ERR("Error creating SDL window.");
-        return false;
-    }
-
-    LOG_SDL_DEBUG("Initializing renderer.");
-
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    
-    if (renderer == NULL)
-    {
-        LOG_SDL_ERR("Error creating renderer.");
-        return false;
-    }
-
-    return true;
-}
 
 void setup(void)
 {
@@ -112,18 +78,20 @@ void setup(void)
     ball.w = 20;
     ball.x = 0;
     ball.y = 0;
-}
 
-void destroy_window(void)
-{
-    LOG_SDL_DEBUG("Destroying renderer...");
-    SDL_DestroyRenderer(renderer);
+    int w, h;
+    float x_out = 0.f, y_out = 0.f;
+    SDL_GetWindowSize(window, &w, &h);
 
-    LOG_SDL_DEBUG("Destroying window...");
-    SDL_DestroyWindow(window);
+    float plot_factor = w / NUMBER_OF_POINTS_PER_PLOT;
 
-    LOG_SDL_DEBUG("Destroying subsystem...");
-    SDL_Quit();
+    for (int i = 0; i < NUMBER_OF_POINTS_PER_PLOT; ++i)
+    {
+        points[i] = (SDL_FPoint) {
+            .x = (i - NUMBER_OF_POINTS_PER_PLOT / 2.f) * w / NUMBER_OF_POINTS_PER_PLOT + w / 2.f,
+            .y = h / 2.f - PIXELS_PER_UNIT * cos(2 * PI * w / PIXELS_PER_UNIT * (i - NUMBER_OF_POINTS_PER_PLOT / 2.f) / NUMBER_OF_POINTS_PER_PLOT)
+        };
+    }
 }
 
 void process_input(void)
@@ -196,6 +164,12 @@ void render(void)
         background_colour_G, 
         background_colour_B, 
         background_colour_A);
+    SDL_SetRenderDrawColor(
+        renderer, 
+        255, 
+        255, 
+        255, 
+        255);
     SDL_RenderClear(renderer);
     
     SDL_SetRenderDrawColor(
@@ -206,6 +180,35 @@ void render(void)
         255);
     SDL_RenderFillRect(renderer, &ball);
 
-    SDL_UpdateWindowSurface(window);
+    SDL_SetRenderDrawColor(
+        renderer, 
+        0, 
+        0, 
+        0, 
+        255);
+
+    arcadia_sdl_render_triangle(
+        renderer,
+        WIDTH/2.0f , HEIGHT/2.0f - 50.f, 
+        WIDTH/2.0f + 100.0f - 50.f, HEIGHT/2.0f + 100.0f - 50.f,
+        WIDTH/2.0f - 50.f, HEIGHT/2.0f + 100.0f - 50.f
+    );
+
+    arcadia_sdl_render_axis(renderer, 2);
+
+    SDL_SetRenderDrawColor(
+        renderer, 
+        255, 
+        0, 
+        0, 
+        255);
+
+    SDL_RenderDrawLinesF(
+        renderer,
+        points,
+        sizeof(points) / sizeof(SDL_FPoint)
+    );
+
+    //SDL_UpdateWindowSurface(window);
     SDL_RenderPresent(renderer);
 }

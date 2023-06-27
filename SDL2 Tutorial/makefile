@@ -7,10 +7,13 @@ CLIBSDL2=-lmingw32 -L"$(SDL2_FOLDER)\\lib" -lSDL2main -lSDL2 -mwindows -mconsole
 
 BINARY=HelloWindow
 
-OBJECTS=HelloWindow.o
+OBJECTS=arcadia_sdl.o HelloWindow.o
 
 $(BINARY): $(OBJECTS)
 	$(CC) -o $@ $^ $(CLIBSDL2) 
+
+arcadia_sdl.o: arcadia_sdl.c
+	$(CC) $(CFLAGS) -c -o $@ $^ $(CINCLUDESDL2)
 
 HelloWindow.o: HelloWindow.c
 	$(CC) $(CFLAGS) -c -o $@ $^ $(CINCLUDESDL2)
