@@ -19,7 +19,7 @@ HelloWindow.o: HelloWindow.c
 	$(CC) $(CFLAGS) -c -o $@ $^ $(CINCLUDESDL2)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $^ 
+	$(CC) $(CFLAGS) -c -o $@ $^ $(CINCLUDESDL2)
 
 .PHONY :  run
 run:

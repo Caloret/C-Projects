@@ -1,9 +1,7 @@
-#include "stdio.h"
 #include "SDL.h"
 #include "SDL_version.h"
 #include "stdbool.h"
 #include "constants.h"
-#include "math.h"
 #include "arcadia_sdl.h"
 
 #define WINDOW_TITLE "Hello Window!"
@@ -25,8 +23,15 @@ int window_height = HEIGHT;
 int last_frame_time = 0;
 int frame_number = 0;
 
+double background_colour_R = 0.0;
+double background_colour_G = 0.0;
+double background_colour_B = 0.0;
+double background_colour_A = 0.0;
+
 // Objects
-SDL_FPoint points[NUMBER_OF_POINTS_PER_PLOT];
+SDL_Rect ball;
+float ball_speed_x_axis = 200.0f;
+float ball_speed_y_axis = 200.0f;
 
 void setup(void);
 
@@ -35,13 +40,6 @@ void process_input(void);
 void update(void);
 
 void render(void);
-
-void calculate_points(
-    SDL_FPoint *points, 
-    size_t number_of_points, 
-    int width, 
-    int height,
-    int pixels_per_unit);
 
 int main(int argc, char *argv[])
 {
@@ -76,7 +74,11 @@ int main(int argc, char *argv[])
 
 void setup(void)
 {
-    // TODO
+    // Set the ball
+    ball.h = 20;
+    ball.w = 20;
+    ball.x = 0;
+    ball.y = 0;
 }
 
 void process_input(void)
@@ -114,12 +116,29 @@ void update(void)
         SDL_Delay(time_to_wait);
     }
 
-    calculate_points(
-        points, 
-        sizeof(points) / sizeof(SDL_FPoint),
-        window_width,
-        window_height,
-        PIXELS_PER_UNIT);
+    // BALL IMPLEMENTATION
+    //
+    float delta_time = (SDL_GetTicks() - last_frame_time) / 1000.0;
+
+    last_frame_time = SDL_GetTicks();
+    
+    int w = 0;
+    int h = 0;
+    SDL_GetWindowSize(window, &w, &h);
+
+    if (ball.x >= (w - ball.w) || ball.x < 0.0f)
+    {
+        ball_speed_x_axis *= -1;
+    }
+
+    ball.x += ball_speed_x_axis * delta_time;
+
+    if (ball.y >= (h - ball.h) || ball.y < 0.0f)
+    {
+        ball_speed_y_axis *= -1;
+    }
+
+    ball.y += ball_speed_y_axis * delta_time;
 
     double factor = 50;
 
@@ -137,47 +156,28 @@ void render(void)
         0, 
         255);
     SDL_RenderClear(renderer);
-
+    
+    // Ball rendering
     SDL_SetRenderDrawColor(
         renderer, 
         255, 
         255, 
         255, 
         255);
-
-    // Render axis and plot
-    arcadia_sdl_render_axis(renderer, 2, PIXELS_PER_UNIT, window_width / PIXELS_PER_UNIT);
+    SDL_RenderFillRect(renderer, &ball);
 
     SDL_SetRenderDrawColor(
         renderer, 
-        255, 
+        0, 
         0, 
         0, 
         255);
 
-    SDL_RenderDrawLinesF(
+    arcadia_sdl_render_triangle(
         renderer,
-        points,
-        sizeof(points) / sizeof(SDL_FPoint)
+        window_width/2.0f ,                 window_height/2.0f - 50.f, 
+        window_width/2.0f + 100.0f - 50.f,  window_height/2.0f + 100.0f - 50.f,
+        window_width/2.0f - 50.f,           window_height/2.0f + 100.0f - 50.f
     );
-
     SDL_RenderPresent(renderer);
-}
-
-void calculate_points(
-    SDL_FPoint *points, 
-    size_t number_of_points, 
-    int width, 
-    int height,
-    int pixels_per_unit)
-{
-    for (size_t i = 0; i < number_of_points; ++i)
-    {
-        float x_p = ((float) i / (float) number_of_points) - 1 / 2.f;
-
-        points[i] = (SDL_FPoint) {
-            .x = width * (x_p + 1 / 2.f),
-            .y = height / 2.f - pixels_per_unit * cos(2.f * PI * width / pixels_per_unit * x_p)
-        };
-    }
 }

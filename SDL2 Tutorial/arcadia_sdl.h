@@ -39,6 +39,8 @@ void arcadia_sdl_render_triangle(
 
 void arcadia_sdl_render_axis(
     SDL_Renderer *renderer, 
-    int axis_pixels_width);
+    size_t axis_border_width_pixels,
+    size_t pixels_per_unit, 
+    size_t number_of_units);
 
 #endif

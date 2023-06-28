@@ -101,27 +101,57 @@ void arcadia_sdl_render_triangle(
 
 void arcadia_sdl_render_axis(
     SDL_Renderer *renderer, 
-    int axis_pixels_width)
+    size_t axis_border_width_pixels,
+    size_t pixels_per_unit, 
+    size_t number_of_units)
 {
     int w = 0, h = 0;
     SDL_Window *window = SDL_RenderGetWindow(renderer);
     SDL_GetWindowSize(window, &w, &h);
 
     // x axis
-    for (int i = -1 * (axis_pixels_width / 2); i < (axis_pixels_width / 2) + 1; i++)
+    for (size_t i = 0; i <= axis_border_width_pixels; ++i)
     {
         SDL_RenderDrawLineF(
             renderer, 
-            0.f,   h / 2.f + i,
-            w + i, h / 2.f + i);
+            0.f,                             h / 2.f - i * (axis_border_width_pixels / 2),
+            w - i * (axis_border_width_pixels / 2), h / 2.f - i * (axis_border_width_pixels / 2));
+
+        // Unit marks for y axis.
+        for (size_t j = 0; j < number_of_units; ++j)
+        {
+            SDL_RenderDrawLineF(
+                renderer, 
+                w / 2 - 10, h / 2.f - i * (axis_border_width_pixels / 2) + j * pixels_per_unit,
+                w / 2 + 10, h / 2.f - i * (axis_border_width_pixels / 2) + j * pixels_per_unit);
+
+            SDL_RenderDrawLineF(
+                renderer, 
+                w / 2 - 10, h / 2.f - i * (axis_border_width_pixels / 2) - j * pixels_per_unit,
+                w / 2 + 10, h / 2.f - i * (axis_border_width_pixels / 2) - j * pixels_per_unit);
+        }
     }
     
     // y axis
-    for (int i = -1 * (axis_pixels_width / 2); i < (axis_pixels_width / 2) + 1; i++)
+    for (size_t i = 0; i <= axis_border_width_pixels; ++i)
     {
         SDL_RenderDrawLineF(
             renderer, 
-            w / 2.f + i, 0,
-            w / 2.f + i, h);
+            w / 2.f - i * (axis_border_width_pixels / 2), 0,
+            w / 2.f - i * (axis_border_width_pixels / 2), h);
+
+        // Unit marks for x axis.
+        for (size_t j = 0; j < number_of_units; ++j)
+        {
+            SDL_RenderDrawLineF(
+                renderer, 
+                w / 2.f - i * (axis_border_width_pixels / 2) + j * pixels_per_unit, h / 2.f - 10,
+                w / 2.f - i * (axis_border_width_pixels / 2) + j * pixels_per_unit, h / 2.f + 10);
+
+            SDL_RenderDrawLineF(
+                renderer, 
+                w / 2.f - i * (axis_border_width_pixels / 2) - j * pixels_per_unit, h / 2.f - 10,
+                w / 2.f - i * (axis_border_width_pixels / 2) - j * pixels_per_unit, h / 2.f + 10);
+        }
     }
 }
