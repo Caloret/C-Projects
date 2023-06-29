@@ -1,18 +1,19 @@
-#include "stdio.h"
+#include "arcadia_sdl.h"
 #include "SDL.h"
 #include "SDL_version.h"
 #include "stdbool.h"
 #include "constants.h"
 #include "math.h"
-#include "arcadia_sdl.h"
 
+#define EQ_FLOAT(x, y, epsilon) (((x) - (y)) < epsilon ? true : false)
+#define SQUARED(x) ((x) * (x))
 #define WINDOW_TITLE "Hello Window!"
 #define POSITION_X SDL_WINDOWPOS_CENTERED
 #define POSITION_Y SDL_WINDOWPOS_CENTERED
 #define WIDTH 600
 #define HEIGHT 500
 #define MAX_NUMBER_OF_POINTS (WIDTH * HEIGHT)
-#define NUMBER_OF_POINTS_PER_PLOT (WIDTH * 10)
+#define NUMBER_OF_POINTS_PER_PLOT (WIDTH)
 #define PIXELS_PER_UNIT (WIDTH / 5)
 
 int app_is_running = false;
@@ -26,7 +27,8 @@ int last_frame_time = 0;
 int frame_number = 0;
 
 // Objects
-SDL_FPoint points[NUMBER_OF_POINTS_PER_PLOT];
+// Define a matrix for storing all the number
+SDL_FPoint points[MAX_NUMBER_OF_POINTS];
 
 void setup(void);
 
@@ -36,7 +38,7 @@ void update(void);
 
 void render(void);
 
-void calculate_points(
+void calculate_points_cos(
     SDL_FPoint *points, 
     size_t number_of_points, 
     int width, 
@@ -61,6 +63,7 @@ int main(int argc, char *argv[])
     
     setup();
 
+    // Render loop
     while (app_is_running)
     {
         process_input();
@@ -114,7 +117,7 @@ void update(void)
         SDL_Delay(time_to_wait);
     }
 
-    calculate_points(
+    calculate_points_cos(
         points, 
         sizeof(points) / sizeof(SDL_FPoint),
         window_width,
@@ -164,20 +167,23 @@ void render(void)
     SDL_RenderPresent(renderer);
 }
 
-void calculate_points(
+void calculate_points_cos(
     SDL_FPoint *points, 
     size_t number_of_points, 
     int width, 
     int height,
     int pixels_per_unit)
 {
+    float x_t = 0, y_t = 0;
+
     for (size_t i = 0; i < number_of_points; ++i)
     {
         float x_p = ((float) i / (float) number_of_points) - 1 / 2.f;
+        float y_p = pixels_per_unit * cos(2.f * PI * width / pixels_per_unit * x_p);
 
-        points[i] = (SDL_FPoint) {
-            .x = width * (x_p + 1 / 2.f),
-            .y = height / 2.f - pixels_per_unit * cos(2.f * PI * width / pixels_per_unit * x_p)
-        };
+        arcadia_sdl_translate_point_to_axis(x_p, y_p, width, height, &x_t, &y_t);
+
+        points[i] = (SDL_FPoint) { .x = x_t, .y = y_t };
     }
 }
+
