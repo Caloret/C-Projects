@@ -114,21 +114,21 @@ void arcadia_sdl_render_axis(
     {
         SDL_RenderDrawLineF(
             renderer, 
-            0.f,                             h / 2.f - i * (axis_border_width_pixels / 2),
-            w - i * (axis_border_width_pixels / 2), h / 2.f - i * (axis_border_width_pixels / 2));
+            0.f,                                            (h - i * axis_border_width_pixels) / 2.f,
+            w - i * (axis_border_width_pixels / 2.f),       (h - i * axis_border_width_pixels) / 2.f);
 
         // Unit marks for y axis.
         for (size_t j = 0; j < number_of_units; ++j)
         {
             SDL_RenderDrawLineF(
                 renderer, 
-                w / 2 - 10, h / 2.f - i * (axis_border_width_pixels / 2) + j * pixels_per_unit,
-                w / 2 + 10, h / 2.f - i * (axis_border_width_pixels / 2) + j * pixels_per_unit);
+                w / 2 - 10,     (h - i * axis_border_width_pixels) / 2.f + j * pixels_per_unit,
+                w / 2 + 10,     (h - i * axis_border_width_pixels) / 2.f + j * pixels_per_unit);
 
             SDL_RenderDrawLineF(
                 renderer, 
-                w / 2 - 10, h / 2.f - i * (axis_border_width_pixels / 2) - j * pixels_per_unit,
-                w / 2 + 10, h / 2.f - i * (axis_border_width_pixels / 2) - j * pixels_per_unit);
+                w / 2 - 10,     (h - i * axis_border_width_pixels) / 2.f - j * pixels_per_unit,
+                w / 2 + 10,     (h - i * axis_border_width_pixels) / 2.f - j * pixels_per_unit);
         }
     }
     
@@ -137,21 +137,33 @@ void arcadia_sdl_render_axis(
     {
         SDL_RenderDrawLineF(
             renderer, 
-            w / 2.f - i * (axis_border_width_pixels / 2), 0,
-            w / 2.f - i * (axis_border_width_pixels / 2), h);
+            (w - i * axis_border_width_pixels) / 2.f,   0,
+            (w - i * axis_border_width_pixels) / 2.f,   h);
 
         // Unit marks for x axis.
         for (size_t j = 0; j < number_of_units; ++j)
         {
             SDL_RenderDrawLineF(
                 renderer, 
-                w / 2.f - i * (axis_border_width_pixels / 2) + j * pixels_per_unit, h / 2.f - 10,
-                w / 2.f - i * (axis_border_width_pixels / 2) + j * pixels_per_unit, h / 2.f + 10);
+                (w - i * axis_border_width_pixels) / 2.f + j * pixels_per_unit,     h / 2.f - 10,
+                (w - i * axis_border_width_pixels) / 2.f + j * pixels_per_unit,     h / 2.f + 10);
 
             SDL_RenderDrawLineF(
                 renderer, 
-                w / 2.f - i * (axis_border_width_pixels / 2) - j * pixels_per_unit, h / 2.f - 10,
-                w / 2.f - i * (axis_border_width_pixels / 2) - j * pixels_per_unit, h / 2.f + 10);
+                (w - i * axis_border_width_pixels) / 2.f - j * pixels_per_unit,     h / 2.f - 10,
+                (w - i * axis_border_width_pixels) / 2.f - j * pixels_per_unit,     h / 2.f + 10);
         }
     }
+}
+
+void arcadia_sdl_translate_point_to_axis(
+    const float x_in,
+    const float y_in,
+    const float w,
+    const float h,
+    float *x_out,
+    float *y_out)
+{
+    *x_out = w * (x_in + 1 / 2.f);
+    *y_out = h / 2.f - y_in;
 }

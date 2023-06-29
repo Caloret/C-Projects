@@ -5,6 +5,5 @@
 #define FRAME_TARGET_TIME_MS (1000 / FPS)
 
 #define PI 3.1416
-#define SQUARE(x) ((x) * (x))
 
 #endif

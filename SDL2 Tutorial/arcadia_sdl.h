@@ -43,4 +43,12 @@ void arcadia_sdl_render_axis(
     size_t pixels_per_unit, 
     size_t number_of_units);
 
+void arcadia_sdl_translate_point_to_axis(
+    const float x_in,
+    const float y_in,
+    const float w,
+    const float h,
+    float *x_out,
+    float *y_out);
+
 #endif
