@@ -29,8 +29,6 @@ int frame_number = 0;
 // Objects
 // Define a matrix for storing all the number
 SDL_FPoint cos_points[MAX_NUMBER_OF_POINTS];
-SDL_FPoint atan_points[MAX_NUMBER_OF_POINTS];
-SDL_FPoint circle_points[MAX_NUMBER_OF_POINTS];
 
 void setup(void);
 
@@ -40,23 +38,7 @@ void update(void);
 
 void render(void);
 
-void update_points(void);
-
 void calculate_points_cos(
-    SDL_FPoint *points, 
-    size_t number_of_points, 
-    int width, 
-    int height,
-    int pixels_per_unit);
-
-void calculate_points_atan(
-    SDL_FPoint *points, 
-    size_t number_of_points, 
-    int width, 
-    int height,
-    int pixels_per_unit);
-
-void calculate_points_circle(
     SDL_FPoint *points, 
     size_t number_of_points, 
     int width, 
@@ -97,31 +79,7 @@ int main(int argc, char *argv[])
 
 void setup(void)
 {
-    update_points();
-}
-
-void update_points(void)
-{
-    calculate_points_cos(
-        cos_points, 
-        sizeof(cos_points) / sizeof(SDL_FPoint),
-        window_width,
-        window_height,
-        PIXELS_PER_UNIT);
-
-    calculate_points_atan(
-        atan_points, 
-        sizeof(atan_points) / sizeof(SDL_FPoint),
-        window_width,
-        window_height,
-        PIXELS_PER_UNIT);
-
-    calculate_points_circle(
-        circle_points, 
-        sizeof(circle_points) / sizeof(SDL_FPoint),
-        window_width,
-        window_height,
-        PIXELS_PER_UNIT);
+    // TODO
 }
 
 void process_input(void)
@@ -135,7 +93,6 @@ void process_input(void)
             if (event.window.event == SDL_WINDOWEVENT_RESIZED)
             {
                 SDL_GetWindowSize(window, &window_width, &window_height);
-                update_points();
             }
             break;
         case SDL_QUIT:
@@ -159,7 +116,14 @@ void update(void)
     {
         SDL_Delay(time_to_wait);
     }
-    
+
+    calculate_points_cos(
+        cos_points, 
+        sizeof(cos_points) / sizeof(SDL_FPoint),
+        window_width,
+        window_height,
+        PIXELS_PER_UNIT);
+
     double factor = 50;
 
     // reset frame number
@@ -194,36 +158,10 @@ void render(void)
         0, 
         255);
 
-    SDL_RenderDrawPointsF(
+    SDL_RenderDrawLinesF(
         renderer,
         cos_points,
         sizeof(cos_points) / sizeof(SDL_FPoint)
-    );
-
-    SDL_SetRenderDrawColor(
-        renderer, 
-        0, 
-        255, 
-        0, 
-        255);
-
-    SDL_RenderDrawPointsF(
-        renderer,
-        atan_points,
-        sizeof(atan_points) / sizeof(SDL_FPoint)
-    );
-
-    SDL_SetRenderDrawColor(
-        renderer, 
-        0, 
-        0, 
-        255, 
-        255);
-
-    SDL_RenderDrawPointsF(
-        renderer,
-        circle_points,
-        sizeof(circle_points) / sizeof(SDL_FPoint)
     );
 
     SDL_RenderPresent(renderer);
@@ -240,8 +178,8 @@ void calculate_points_cos(
 
     for (size_t i = 0; i < number_of_points; ++i)
     {
-        float x_p = width * (((float) i / (float) number_of_points) - 1 / 2.f);
-        float y_p = pixels_per_unit * cos(2.f * PI * x_p / pixels_per_unit);
+        float x_p = ((float) i / (float) number_of_points) - 1 / 2.f;
+        float y_p = pixels_per_unit * cos(2.f * PI * width / pixels_per_unit * x_p);
 
         arcadia_sdl_translate_point_to_axis(x_p, y_p, width, height, &x_t, &y_t);
 
@@ -249,57 +187,3 @@ void calculate_points_cos(
     }
 }
 
-void calculate_points_atan(
-    SDL_FPoint *points, 
-    size_t number_of_points, 
-    int width, 
-    int height,
-    int pixels_per_unit)
-{
-    float x_t = 0, y_t = 0;
-
-    for (size_t i = 0; i < number_of_points; ++i)
-    {
-        float x_p = width * (((float) i / (float) number_of_points) - 1 / 2.f);
-        float y_p = pixels_per_unit * atanf(2.f * PI * x_p / pixels_per_unit);
-
-        arcadia_sdl_translate_point_to_axis(x_p, y_p, width, height, &x_t, &y_t);
-
-        points[i] = (SDL_FPoint) { .x = x_t, .y = y_t };
-    }
-}
-
-void calculate_points_circle(
-    SDL_FPoint *points, 
-    size_t number_of_points, 
-    int width, 
-    int height,
-    int pixels_per_unit)
-{
-    float x_t = 0, y_t = 0;
-    float radius = 2;
-
-    size_t total_count = 0; 
-    for (int i = 0; i < width; ++i)
-    {
-        for (int j = 0; j < height; ++j)
-        {
-            total_count = i * height + j;
-
-            if (total_count >= number_of_points) return;
-
-            arcadia_sdl_translate_point_to_axis(i, j, width, height, &x_t, &y_t);
-
-            bool is_circle_point = (SQUARED(i) + SQUARED(j)) - SQUARED(radius * pixels_per_unit) <= 0;
-            
-            //printf("i = %d :: j = %d :: x = %f :: y = %f \n", i, j, x_t, y_t);
-
-            if (is_circle_point)
-            {
-                points[total_count] = (SDL_FPoint) { .x = i + width / 2, .y = j + height / 2 };
-            } 
-        }    
-    }
-
-    //exit(0);
-}

@@ -164,6 +164,6 @@ void arcadia_sdl_translate_point_to_axis(
     float *x_out,
     float *y_out)
 {
-    *x_out = w * (x_in + 1 / 2.f);
+    *x_out = x_in + w / 2.f;
     *y_out = h / 2.f - y_in;
 }
