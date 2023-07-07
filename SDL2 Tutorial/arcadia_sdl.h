@@ -9,6 +9,12 @@
 #define LOG_SDL_DEBUG(x) fprintf(stdout, "[SDL] " #x "\n");  
 #define LOG_SDL_REVISION_DEBUG() fprintf(stdout, "[SDL] SDL Revision: %s\n", SDL_GetRevision());  
 
+
+// Colors Definition for SDL
+#define ARCADIA_COL_BLACK 0,0,0,255
+#define ARCADIA_COL_WHITE 255,255,255,255
+
+
 int arcadia_sdl_initialize_window(
     SDL_Window **window, 
     SDL_Renderer **renderer,
