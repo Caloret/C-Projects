@@ -100,13 +100,13 @@ void arcadia_sdl_render_triangle(
 }
 
 void arcadia_sdl_render_axis(
+    SDL_Window *window,
     SDL_Renderer *renderer, 
     size_t axis_border_width_pixels,
     size_t pixels_per_unit, 
     size_t number_of_units)
 {
     int w = 0, h = 0;
-    SDL_Window *window = SDL_RenderGetWindow(renderer);
     SDL_GetWindowSize(window, &w, &h);
 
     // x axis

@@ -1,7 +1,7 @@
 #ifndef ARCADIA_SDL_H
 #define ARCADIA_SDL_H
 
-#include "SDL.h"
+#include <SDL2/SDL.h>
 #include "stdbool.h"
 #include "stdio.h"
 
@@ -44,6 +44,7 @@ void arcadia_sdl_render_triangle(
 );
 
 void arcadia_sdl_render_axis(
+    SDL_Window *window,
     SDL_Renderer *renderer, 
     size_t axis_border_width_pixels,
     size_t pixels_per_unit, 
