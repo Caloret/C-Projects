@@ -16,9 +16,9 @@ else
     CWinFlags =
 endif	
 
-BINARY=Tutorial_07
+BINARY=Tutorial_08
 
-OBJECTS=arcadia_sdl.o Tutorial_07.o
+OBJECTS=arcadia_sdl.o Tutorial_08.o
 
 $(BINARY): $(OBJECTS)
 	$(CC) -o $@ $^ $(CLIBSDL2) 
@@ -26,7 +26,7 @@ $(BINARY): $(OBJECTS)
 arcadia_sdl.o: arcadia_sdl.c
 	$(CC) $(CFLAGS) -c -o $@ $^ $(CINCLUDESDL2)
 
-Tutorial_07.o: Tutorial_07.c
+Tutorial_08.o: Tutorial_08.c
 	$(CC) $(CFLAGS) -c -o $@ $^ $(CINCLUDESDL2)
 
 %.o: %.c
