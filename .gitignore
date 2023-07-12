@@ -2,3 +2,7 @@ SDL2 Tutorial/SDL2.dll
 *.o
 *.
 *.exe
+
+*.swp
+
+SDL2 Tutorial/tags
