@@ -11,8 +11,11 @@
 
 
 // Colors Definition for SDL
-#define ARCADIA_COL_BLACK 0,0,0,255
-#define ARCADIA_COL_WHITE 255,255,255,255
+#define ARCADIA_COL_BLACK       0,  0,  0,255
+#define ARCADIA_COL_WHITE     255,255,255,255
+#define ARCADIA_COL_RED       255,  0,  0,255
+#define ARCADIA_COL_BLUE        0,  0,255,255
+#define ARCADIA_COL_GREEN       0,255,  0,255
 
 
 int arcadia_sdl_initialize_window(
@@ -42,6 +45,22 @@ void arcadia_sdl_render_triangle(
     float x2, float y2,
     float x3, float y3
 );
+
+void arcadia_sdl_render_circle(
+    SDL_Renderer *renderer,
+    float cx, 
+    float cy,
+    float radius,
+    int window_width,
+    int window_height);
+
+void arcadia_sdl_render_filled_circle(
+    SDL_Renderer *renderer,
+    float cx, 
+    float cy,
+    float radius,
+    int window_width,
+    int window_height);
 
 void arcadia_sdl_render_axis(
     SDL_Window *window,

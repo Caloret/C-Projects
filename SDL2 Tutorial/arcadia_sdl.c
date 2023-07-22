@@ -1,4 +1,5 @@
 #include "arcadia_sdl.h"
+#include <stdio.h>
 
 int arcadia_sdl_initialize_window(
     SDL_Window **window, 
@@ -97,6 +98,74 @@ void arcadia_sdl_render_triangle(
     };
 
     SDL_RenderDrawLinesF(renderer, points, sizeof(points) / sizeof(SDL_FPoint));
+}
+
+void arcadia_sdl_render_circle(
+    SDL_Renderer *renderer,
+    float cx, 
+    float cy,
+    float radius,
+    int window_width,
+    int window_height)
+{
+    SDL_FPoint circle_points[1024 * 8];
+    float epsilon = 100.0f;
+    int position = 0;
+    
+    for (int i = -window_width/2; i < window_width/2; ++i)
+    {
+        for (int j = -window_height/2; j < window_height/2; ++j)
+        {
+            float x = i + cx;
+            float y = j + cy;
+            if (i * i + j * j >= radius * radius - epsilon && 
+                i * i + j * j <= radius * radius + epsilon)
+            {
+                circle_points[position] = (SDL_FPoint){x, y};
+                position++;
+            }
+        }
+    }
+#if 0
+    printf("Circle :: Position %d,\t\t Array Length: %d\n", position, window_width * window_height); 
+#endif
+    SDL_RenderDrawPointsF(
+        renderer,
+        circle_points,
+        position);
+}
+
+void arcadia_sdl_render_filled_circle(
+    SDL_Renderer *renderer,
+    float cx, 
+    float cy,
+    float radius,
+    int window_width,
+    int window_height)
+{
+    SDL_FPoint circle_points[1024 * 512];
+    int position = 0;
+    
+    for (int i = -window_width/2; i < window_width/2; ++i)
+    {
+        for (int j = -window_height/2; j < window_height/2; ++j)
+        {
+            float x = i + cx;
+            float y = j + cy;
+            if (i * i + j * j <= radius * radius)
+            {
+                circle_points[position] = (SDL_FPoint){x, y};
+                position++;
+            }
+        }
+    }
+#if 0
+    printf("Filled Circle :: Position %d,\t\t Array Length: %d\n", position, window_width * window_height); 
+#endif
+    SDL_RenderDrawPointsF(
+        renderer,
+        circle_points,
+        position);
 }
 
 void arcadia_sdl_render_axis(

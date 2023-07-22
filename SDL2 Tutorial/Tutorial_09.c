@@ -1,9 +1,11 @@
+#include "stdint.h"
 #include "arcadia_sdl.h"
 #include "SDL.h"
 #include "SDL_version.h"
 #include "SDL_image.h"
 #include "stdbool.h"
 #include "constants.h"
+#include <stdlib.h>
 
 #define WINDOW_TITLE "Hello Window!"
 #define POSITION_X SDL_WINDOWPOS_CENTERED
@@ -45,6 +47,8 @@ SDL_Vertex vertices[] = {
 
 };
 
+SDL_FPoint circle_points[WIDTH * HEIGHT] = {0};
+
 bool setup(void);
 
 void process_input(void);
@@ -52,6 +56,8 @@ void process_input(void);
 void update(void);
 
 void render(void);
+
+int random_int(int min, int max);
 
 // SDL2 forces to define main function with argc and argv arguments:w
 int main(int argc, char *argv[])
@@ -162,10 +168,8 @@ void update(void)
         SDL_Delay(time_to_wait);
     }
     
-    double factor = 50;
-
     // reset frame number
-    frame_number = frame_number > (factor * FPS) ? 0 : frame_number;
+    frame_number = frame_number > FPS ? 0 : frame_number;
     frame_number++;
 }
 
@@ -174,15 +178,35 @@ void render(void)
     SDL_SetRenderDrawColor(renderer, ARCADIA_COL_BLACK);
     SDL_RenderClear(renderer);
 
-    SDL_SetRenderDrawColor(renderer, ARCADIA_COL_WHITE);
-    SDL_RenderGeometry(
-        renderer,
-        grass_texture,
-        vertices,
-        sizeof(vertices)/sizeof(vertices[0]),
-        NULL,
-        0);
-                
+    for (size_t group_circles = 0; group_circles < 4; ++group_circles)
+    {
+        for (int num_circles = 0; num_circles < 10; ++num_circles)
+        {
+            SDL_SetRenderDrawColor(renderer, ARCADIA_COL_WHITE);
+            arcadia_sdl_render_circle(
+                renderer,
+                group_circles * window_width/8  + random_int(50, 200), 
+                group_circles * window_height/8 + random_int(50, 200),
+                random_int(5, 10),
+                window_width,
+                window_height);
+                   
+            SDL_SetRenderDrawColor(renderer, ARCADIA_COL_RED);
+            arcadia_sdl_render_filled_circle(
+                renderer,
+                group_circles * window_width/8  - random_int(50, 200),
+                group_circles * window_height/8 - random_int(50, 200),
+                random_int(5, 10),
+                window_width,
+                window_height);
+        }
+    } 
+
     SDL_RenderPresent(renderer);
 }
 
+
+int random_int(int min, int max)
+{
+    return min + rand() % (max + 1 - min);
+}
