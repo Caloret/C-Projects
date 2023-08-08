@@ -11,11 +11,11 @@
 
 
 // Colors Definition for SDL
-#define ARCADIA_COL_BLACK       0,  0,  0,255
-#define ARCADIA_COL_WHITE     255,255,255,255
-#define ARCADIA_COL_RED       255,  0,  0,255
-#define ARCADIA_COL_BLUE        0,  0,255,255
-#define ARCADIA_COL_GREEN       0,255,  0,255
+#define ARCADIA_COL_BLACK       0,   0,   0, 255
+#define ARCADIA_COL_WHITE     255, 255, 255, 255
+#define ARCADIA_COL_RED       255,   0,   0, 255
+#define ARCADIA_COL_BLUE        0,   0, 255, 255
+#define ARCADIA_COL_GREEN       0, 255,   0, 255
 
 
 int arcadia_sdl_initialize_window(

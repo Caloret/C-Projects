@@ -1,8 +1,8 @@
 #include "stdint.h"
 #include "arcadia_sdl.h"
-#include "SDL.h"
-#include "SDL_version.h"
-#include "SDL_image.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_version.h>
+#include <SDL2/SDL_image.h>
 #include "stdbool.h"
 #include "constants.h"
 #include <stdlib.h>
@@ -32,18 +32,18 @@ int frame_number = 0;
 char *grass_image_path = "textures/grass.png";
 SDL_Rect moving_grass;
 SDL_Vertex vertices[] = {
-    { { 0,        0 },          {ARCADIA_COL_WHITE}, {0, 1}},
-    { { WIDTH,    0 },          {ARCADIA_COL_WHITE}, {1, 0}},
-    { { WIDTH/2,  HEIGHT/2 },   {ARCADIA_COL_WHITE}, {1, 1}},
-    { { WIDTH,    0 },          {ARCADIA_COL_WHITE}, {0, 1}},
-    { { WIDTH,    HEIGHT },     {ARCADIA_COL_WHITE}, {1, 0}},
-    { { WIDTH/2,  HEIGHT/2 },   {ARCADIA_COL_WHITE}, {1, 1}},
-    { { WIDTH/2,  HEIGHT/2 },   {ARCADIA_COL_WHITE}, {0, 1}},
-    { { WIDTH,    HEIGHT },     {ARCADIA_COL_WHITE}, {1, 0}},
-    { { 0,        HEIGHT },     {ARCADIA_COL_WHITE}, {1, 1}},
-    { { WIDTH/2,  HEIGHT/2 },   {ARCADIA_COL_WHITE}, {0, 1}},
-    { { 0,        HEIGHT },     {ARCADIA_COL_WHITE}, {1, 0}},
-    { { 0,              0},     {ARCADIA_COL_WHITE}, {1, 1}},
+    { { 0,        		 0 },    {ARCADIA_COL_WHITE}, {0, 1}},
+    { { WIDTH,    		 0 },    {ARCADIA_COL_WHITE}, {1, 0}},
+    { { WIDTH/2,  HEIGHT/2 },    {ARCADIA_COL_WHITE}, {1, 1}},
+    { { WIDTH,    		 0 }, 	 {ARCADIA_COL_WHITE}, {0, 1}},
+    { { WIDTH,      HEIGHT },    {ARCADIA_COL_WHITE}, {1, 0}},
+    { { WIDTH/2,  HEIGHT/2 },    {ARCADIA_COL_WHITE}, {1, 1}},
+    { { WIDTH/2,  HEIGHT/2 },    {ARCADIA_COL_WHITE}, {0, 1}},
+    { { WIDTH,      HEIGHT },    {ARCADIA_COL_WHITE}, {1, 0}},
+    { { 0,          HEIGHT },    {ARCADIA_COL_WHITE}, {1, 1}},
+    { { WIDTH/2,  HEIGHT/2 },    {ARCADIA_COL_WHITE}, {0, 1}},
+    { { 0,          HEIGHT },    {ARCADIA_COL_WHITE}, {1, 0}},
+    { { 0,                0},    {ARCADIA_COL_WHITE}, {1, 1}},
 
 };
 
@@ -119,6 +119,7 @@ bool setup(void)
         return false;
     }
 
+	LOG_SDL_DEBUG("Grass Texture loaded.");
     return true;
 }
 
@@ -203,6 +204,7 @@ void render(void)
     } 
 
     SDL_RenderPresent(renderer);
+	
 }
 
 

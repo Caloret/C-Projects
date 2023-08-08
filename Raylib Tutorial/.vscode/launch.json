@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+		{
+			"type": "gdb",
+			"request": "launch",
+			"name": "Debug GDB",
+			"target": "${workspaceRoot}/${fileBasenameNoExtension}.exe",
+			"cwd": "${workspaceRoot}",
+			"valuesFormatting": "parseText",
+			"preLaunchTask": {
+				"task": "Build",
+				"type": "grunt"
+			}
+		}
+    ]
+}

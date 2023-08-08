@@ -109,7 +109,7 @@ void arcadia_sdl_render_circle(
     int window_height)
 {
     SDL_FPoint circle_points[1024 * 8];
-    float epsilon = 100.0f;
+    float epsilon = 10;
     int position = 0;
     
     for (int i = -window_width/2; i < window_width/2; ++i)
@@ -143,9 +143,10 @@ void arcadia_sdl_render_filled_circle(
     int window_width,
     int window_height)
 {
-    SDL_FPoint circle_points[1024 * 512];
+    SDL_FPoint circle_points[1024 * 1024];
     int position = 0;
     
+	LOG_SDL_DEBUG("Rendering circle...");
     for (int i = -window_width/2; i < window_width/2; ++i)
     {
         for (int j = -window_height/2; j < window_height/2; ++j)
