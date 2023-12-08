@@ -1,0 +1,8 @@
+
+Verlet Objects. Physics implementation theory
+
+- https://pikuma.com/blog/verlet-integration-2d-cloth-physics-simulation
+
+Example in github
+
+https://github.com/johnBuffer/VerletSFML/blob/main/solver.hpp
