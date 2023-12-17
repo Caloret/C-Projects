@@ -5,15 +5,15 @@
 RAYLIB_FOLDER=C:\\Raylib
 
 CC=gcc
-CFLAGS=-Wall -Wextra -g -std=c11
+CFLAGS=-v -Wall -Wextra -g -std=c11
 
 ifeq ($(OS), Windows_NT)
     CINCLUDERAYLIB=-I "$(RAYLIB_FOLDER)\\include" 
     CLIBRAYLIB=-lmingw32 -L"$(RAYLIB_FOLDER)\\lib" -lraylib -lopengl32 -lgdi32 -lwinmm
     CWinFlags = 
 else
-    CINCLUDERAYLIB=$(shell pkg-config --cflags raylib)
-    CLIBRAYLIB=$(shell pkg-config --libs raylib) 
+    CINCLUDERAYLIB=-I 'usr/local/include'
+    CLIBRAYLIB=-lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -lc 
     CWinFlags =
 endif	
 
